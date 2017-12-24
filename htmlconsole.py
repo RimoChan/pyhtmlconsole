@@ -9,7 +9,7 @@ import threading
 import functools
 from multiprocessing import Process, Queue
 
-class H台窗體(QWebEngineView):
+class H檯窗體(QWebEngineView):
     def __init__(self,頻道):
         super().__init__()
         self.initUI(頻道)
@@ -18,7 +18,7 @@ class H台窗體(QWebEngineView):
         self.page().runJavaScript(x)
 
     def initUI(self,頻道):
-        self.setWindowTitle('九字切')
+        self.setWindowTitle('Ｈ檯')
         self.頁面=self.page()
         self.頁面.setWebChannel(頻道)
         self.load(QUrl('file:///html/index.html'))
@@ -61,7 +61,7 @@ def 紫禁城(出,入):
     頻道 = QWebChannel()
     彥 = 山彥(出)
     頻道.registerObject('handler',彥)
-    主窗體 = H台窗體(頻道)
+    主窗體 = H檯窗體(頻道)
 
     t = threading.Thread(target=收取)
     t.setDaemon(True)
