@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIcon
 import time 
 import json
 import threading
+import functools
 from multiprocessing import Process, Queue
 
 class H台窗體(QWebEngineView):
@@ -22,7 +23,7 @@ class H台窗體(QWebEngineView):
         self.頁面.setWebChannel(頻道)
         self.load(QUrl('file:///html/index.html'))
         self.resize(1366,768)
-        self.show()    
+        self.show() 
 
 class 山彥(QObject):
     def __init__(self,出):
@@ -34,21 +35,12 @@ class 山彥(QObject):
     def rec(self,命令):
         if 命令=='初始化': 
             self.連線=True
-        if 命令=='輸出完成':
+        elif 命令=='輸出完成':
             self.出.put('輸出完成')
-            # _print('輸出完成')
         elif 命令[0]=='@':
-            # _print(命令)
             self.出.put(命令[1:])
-
-class 假面():
-    def write(self,s):
-        s='@'+s.replace('\n','<br/>')
-        輸出隊列.put(s)
-        if 輸入隊列.get(True)!='輸出完成':
-            raise '???'
-    def read(self,s):
-        pass
+        else:
+            _print('Warning:%s!!!' %命令)
 
 def 紫禁城(出,入):
     def 收取():
@@ -57,7 +49,7 @@ def 紫禁城(出,入):
                 time.sleep(0.1)
                 continue
             item=入.get(True)
-            # _print(json.dumps(item))
+            _print(json.dumps(item))
             if item[0]=='@':
                 主窗體.跑js('顯示(%s)'%json.dumps(item[1:]))
             elif item[0]=='反':
@@ -80,16 +72,42 @@ def 紫禁城(出,入):
 #————————————————————————————————————————————————
 #主進程部分
 
+
 輸入隊列=Queue()
 輸出隊列=Queue()
-def init():
+daemon=False
+@functools.lru_cache(1)
+def 初始化():
     子進程 = Process(target=紫禁城, args=(輸入隊列,輸出隊列))
+    global daemon
+    子進程.daemon = daemon
     子進程.start()
 
-_默認面=假面()
+import sys
+class 假面():
+    def write(self,s):
+        初始化()
+        s='@'+s
+        s=s.replace('  ','&nbsp;&nbsp;')# 一個空格不轉義……
+        s=s.replace('\n','<br/>').replace('  ','&nbsp;&nbsp;') 
+        # s=s.replace('\r','<br/>')
+        輸出隊列.put(s)
+        if 輸入隊列.get(True)!='輸出完成':
+            raise '???'
+    def readline(self,tip='input:'):
+        輸出隊列.put('反'+tip)
+        return 輸入隊列.get(True)
+    def flush(self):
+        pass
+
+mask=假面()
+
 _print=print
 def print(*li,**d):
-    _print(*li,**d,file=_默認面)
+    初始化()
+    _print(*li,**d,file=mask)
 def input(x):
-    輸出隊列.put('反'+x)
-    return 輸入隊列.get(True)
+    初始化()
+    return mask.readline(tip=x)
+def pause():
+    input('Press <b>ENTER</b> key to continue . . .')

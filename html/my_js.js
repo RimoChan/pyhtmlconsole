@@ -10,37 +10,47 @@ function 初始化(){
         send('初始化');
     }
     catch(err){
-        初始化()
+        setTimeout(初始化,50)
     }
 }
 
 $(function(){
     初始化()
+    設置輸入框行爲()
+})
+
+function 設置輸入框行爲(){
+    $('#輸入框包裝').css('opacity','0.9')
     $('#輸入文字').bind('keypress',
         function(event){
             if(event.keyCode == "13")
                 提交()
         }
     );
-})
+    $('#輸入文字').focus(function(){ 
+        $('#輸入框包裝').css('opacity','0.9')
+    }); 
+    $('#輸入文字').blur(function(){ 
+        $('#輸入框包裝').css('opacity','0.3')  
+    }); 
+}
 
 function 顯示(s){
     var t=$('<span>')
-    t.html(s)
+    t.html(s);
     $('#字').append(t);
-    $('html, body, .content').animate({scrollTop: $(document).height()}, 0);
+    $('html, body').animate({scrollTop: $(document).height()}, 0);
     send('輸出完成');
 }
 
 function 輸入(s){
-    $('#輸入框').fadeIn(400)
+    $('#輸入框').show(300);
     $('#輸入文字').focus();
-    // setTimeout(500,function(){$('#輸入文字').focus();})
-    $('#提示文字').html(s)
+    $('#提示文字').html(s); 
 }
 
 function 提交(){
-    $('#輸入框').fadeOut(250)
+    $('#輸入框').hide(200);
     send('@'+$('#輸入文字').val());
-    $('#輸入文字').val('')
+    $('#輸入文字').val('');
 }
