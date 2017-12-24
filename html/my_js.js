@@ -35,10 +35,17 @@ function 設置輸入框行爲(){
     }); 
 }
 
+全字=''
 function 顯示(s){
-    var t=$('<span>')
-    t.html(s);
-    $('#字').append(t);
+    for (i in s){
+        if(s[i]=='\r'){
+            var p=全字.lastIndexOf('\n')
+            全字=全字.substring(0,p+1)
+        }
+        else
+            全字+=s[i];
+    }
+    $('#字').html(全字);
     $('html, body').animate({scrollTop: $(document).height()}, 0);
     send('輸出完成');
 }

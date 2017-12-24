@@ -49,7 +49,7 @@ def 紫禁城(出,入):
                 time.sleep(0.1)
                 continue
             item=入.get(True)
-            _print(json.dumps(item))
+            # _print(json.dumps(item))
             if item[0]=='@':
                 主窗體.跑js('顯示(%s)'%json.dumps(item[1:]))
             elif item[0]=='反':
@@ -89,8 +89,7 @@ class 假面():
         初始化()
         s='@'+s
         s=s.replace('  ','&nbsp;&nbsp;')# 一個空格不轉義……
-        s=s.replace('\n','<br/>').replace('  ','&nbsp;&nbsp;') 
-        # s=s.replace('\r','<br/>')
+        s=s.replace('\n','<br/>\n')
         輸出隊列.put(s)
         if 輸入隊列.get(True)!='輸出完成':
             raise '???'
