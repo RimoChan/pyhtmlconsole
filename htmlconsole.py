@@ -105,7 +105,7 @@ _print=print
 def print(*li,**d):
     初始化()
     _print(*li,**d,file=mask)
-def input(x):
+def input(x=''):
     初始化()
     return mask.readline(tip=x)
 def pause():
