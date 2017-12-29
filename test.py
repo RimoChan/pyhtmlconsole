@@ -55,9 +55,14 @@ def test_3():
         bar.update(i)
 
     hc.pause()
-    
+
+def test_4():
+    for i in range(2000):
+        hc.print(i)
+    hc.pause()
 
 if __name__=='__main__':
     test_1()
     test_2()
     test_3()
+    test_4()

@@ -35,17 +35,24 @@ function 設置輸入框行爲(){
     }); 
 }
 
-全字=''
+緩衝字=''
 function 顯示(s){
-    for (i in s){
-        if(s[i]=='\r'){
-            var p=全字.lastIndexOf('\n')
-            全字=全字.substring(0,p+1)
+    if(s.charAt(s.length - 1)=='\n'){
+        $('#現字').html('');
+        $('#前字').append(緩衝字)
+        緩衝字=''
+        $('#前字').append(s)
+    }else{
+        for (i in s){
+            if(s[i]=='\r'){
+                var p=緩衝字.lastIndexOf('\n')
+                緩衝字=緩衝字.substring(0,p+1)
+            }
+            else
+                緩衝字+=s[i];
         }
-        else
-            全字+=s[i];
+        $('#現字').html(緩衝字);
     }
-    $('#字').html(全字);
     $('html, body').animate({scrollTop: $(document).height()}, 0);
     send('輸出完成');
 }
