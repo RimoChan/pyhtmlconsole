@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIcon
 import time 
 import json
 import threading
+import os
 import functools
 from multiprocessing import Process, Queue
 
@@ -21,7 +22,9 @@ class H檯窗體(QWebEngineView):
         self.setWindowTitle('Ｈ檯')
         self.頁面=self.page()
         self.頁面.setWebChannel(頻道)
-        self.load(QUrl('file:///html/index.html'))
+        此處 = os.path.dirname(os.path.abspath(__file__))
+        路径 = os.path.abspath(此處+'/html/index.html').replace('\\','/')
+        self.load(QUrl(f'file:///{路径}'))
         self.resize(1366,768)
         self.show() 
 
@@ -40,7 +43,7 @@ class 山彥(QObject):
         elif 命令[0]=='@':
             self.出.put(命令[1:])
         else:
-            _print('Warning:%s!!!' %命令)
+            _print(f'Warning:{命令}!!!')
 
 def 紫禁城(出,入):
     def 收取():
@@ -51,11 +54,11 @@ def 紫禁城(出,入):
             item=入.get(True)
             # _print(json.dumps(item))
             if item[0]=='@':
-                主窗體.跑js('顯示(%s)'%json.dumps(item[1:]))
+                主窗體.跑js(f'顯示({json.dumps(item[1:])})')
             elif item[0]=='反':
-                主窗體.跑js('輸入(%s)'%json.dumps(item[1:]))
+                主窗體.跑js(f'輸入({json.dumps(item[1:])})')
             else:
-                _print('Warning:%s is wrong.'%item)
+                _print(f'Warning:{item} is wrong.')
 
     app = QApplication([])
     頻道 = QWebChannel()
@@ -98,6 +101,10 @@ class 假面():
         return 輸入隊列.get(True)
     def flush(self):
         pass
+    def close(self):
+        pass
+    def isatty(self):
+        return True
 
 mask=假面()
 
